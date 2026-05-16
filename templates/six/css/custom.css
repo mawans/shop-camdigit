@@ -1,0 +1,352 @@
+/**
+ * Custom CSS - Final overrides for CAMDigit + WHMCS integration
+ */
+.preloader {
+  display: none !important;
+}
+body.modal-open {
+  overflow: hidden !important;
+}
+.mean__menu-wrapper .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  z-index: 1000;
+  min-width: 220px;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+}
+.system-modal {
+  z-index: 10050 !important;
+}
+.hosting-section,
+.pricing-section,
+.testimonial-section,
+.faq-section,
+.news-section,
+.brand-section {
+  overflow: hidden;
+}
+.panel .table {
+  margin-bottom: 0;
+  border: none;
+  border-radius: 0;
+}
+.viewcart .panel {
+  border-radius: 12px;
+}
+.tooltip {
+  z-index: 10070 !important;
+}
+.well {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 12px;
+  box-shadow: none;
+  padding: 20px;
+}
+.input-group .btn {
+  border-radius: 0 8px 8px 0;
+}
+.input-group .form-control {
+  border-radius: 8px 0 0 8px !important;
+}
+.client-home-panels .panel {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.client-home-panels .panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+.doming-input .form-control,
+.doming-input input[type="text"] {
+  border: none !important;
+  border-radius: 0 !important;
+  height: 60px !important;
+}
+.main-menu nav > ul > li.nav-item {
+  position: relative;
+}
+.main-menu nav > ul > li.nav-item > a.nav-link {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 15px 14px;
+}
+.main-menu nav > ul > li.nav-item > a.nav-link:hover {
+  color: var(--theme2);
+}
+.article-list .panel {
+  transition: all 0.3s ease;
+}
+.article-list .panel:hover {
+  border-color: var(--theme);
+}
+.ticket-list .panel-body {
+  padding: 15px;
+}
+.doming-input .nice-select {
+  height: 60px;
+  line-height: 60px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   REGISTRATION FORM — Unified Design
+═══════════════════════════════════════════════════════════════════════ */
+
+/* Card wrapper */
+#registration > form {
+  background: var(--white, #fff);
+  border: 1px solid var(--border, #e8e8e8);
+  border-radius: 16px;
+  padding: 36px 40px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.07);
+}
+
+/* Section dividers */
+#registration .sub-heading {
+  margin: 28px 0 22px;
+  border-color: var(--border, #ddd);
+}
+#registration .sub-heading span {
+  background: var(--white, #fff);
+  color: var(--theme);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Form group spacing */
+#registration .form-group {
+  margin-bottom: 16px;
+}
+
+/* ── All fields: unified 44 px height, 8 px radius ────────────────────── */
+#registration .field {
+  display: block !important;
+  width: 100%;
+  height: 44px !important;
+  min-height: 44px;
+  border: 1px solid var(--border, #ddd) !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  color: var(--text, #444);
+  background: #fff;
+  box-sizing: border-box !important;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+#registration textarea.field {
+  height: auto !important;
+  min-height: 90px;
+}
+#registration .field:hover {
+  border-color: var(--theme) !important;
+}
+#registration .field:focus {
+  border-color: var(--theme) !important;
+  box-shadow: 0 0 0 3px rgba(35, 106, 37, 0.1) !important;
+  outline: none !important;
+}
+#registration .field[disabled],
+#registration .field[readonly] {
+  background: var(--bg, #f8f8f8) !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ── Prepend-icon layout: icons centered in 44 px ────────────────────── */
+#registration .prepend-icon {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+#registration .prepend-icon .field-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  width: 44px;
+  height: 44px !important;
+  line-height: 44px !important;
+  text-align: center;
+  pointer-events: none;
+}
+#registration .prepend-icon .field-icon i {
+  font-size: 14px;
+  color: var(--text2, #bbb);
+}
+/* Indent text past the icon */
+#registration .prepend-icon > .field,
+#registration .prepend-icon .intl-tel-input ~ .field {
+  padding-left: 44px !important;
+}
+/* Nice-select spans inside .prepend-icon also need the indent */
+#registration .prepend-icon .nice-select {
+  padding-left: 44px !important;
+}
+
+/* ── Nice-select: full-width, 44 px, themed ──────────────────────────── */
+#registration .nice-select {
+  float: none;
+  display: block;
+  width: 100%;
+  height: 44px !important;
+  line-height: 42px !important;
+  border-radius: 8px !important;
+  border-color: var(--border, #ddd) !important;
+  font-size: 14px;
+  color: var(--text, #444);
+  box-sizing: border-box;
+}
+#registration .nice-select:hover {
+  border-color: var(--theme) !important;
+}
+#registration .nice-select.open {
+  border-color: var(--theme) !important;
+  box-shadow: 0 0 0 3px rgba(35, 106, 37, 0.1);
+  border-radius: 8px 8px 0 0 !important;
+}
+#registration .nice-select .list {
+  width: 100%;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--border, #ddd);
+  max-height: 220px;
+  overflow-y: auto;
+}
+#registration .nice-select .option:hover,
+#registration .nice-select .option.focus,
+#registration .nice-select .option.selected {
+  background-color: rgba(35, 106, 37, 0.07);
+  color: var(--theme);
+}
+
+/* ── Phone field: intl-tel-input ─────────────────────────────────────── */
+
+/* Hide the redundant phone icon — the flag panel already sits on the left */
+#registration label[for="inputPhone"].field-icon {
+  display: none;
+}
+
+/* Wrapper block */
+#registration .intl-tel-input {
+  display: block !important;
+  position: relative;
+  width: 100%;
+}
+
+/* The <input type="tel"> inside — override generic .prepend-icon .field padding */
+#registration .intl-tel-input input[type="tel"].field {
+  height: 44px !important;
+  min-height: 44px;
+  padding: 10px 14px !important;
+  border: 1px solid var(--border, #ddd) !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+  width: 100%;
+}
+
+/* Correct padding-left for each dial-code panel width */
+#registration .intl-tel-input.allow-dropdown input[type="tel"].field,
+#registration .intl-tel-input.separate-dial-code input[type="tel"].field {
+  padding-left: 52px !important;
+}
+#registration
+  .intl-tel-input.separate-dial-code.iti-sdc-2
+  input[type="tel"].field {
+  padding-left: 66px !important;
+}
+#registration
+  .intl-tel-input.separate-dial-code.iti-sdc-3
+  input[type="tel"].field {
+  padding-left: 74px !important;
+}
+#registration
+  .intl-tel-input.separate-dial-code.iti-sdc-4
+  input[type="tel"].field {
+  padding-left: 84px !important;
+}
+#registration
+  .intl-tel-input.separate-dial-code.iti-sdc-5
+  input[type="tel"].field {
+  padding-left: 96px !important;
+}
+
+/* Flag/dial-code panel — styled as a left input-group panel */
+#registration .intl-tel-input .flag-container {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 44px;
+  border-right: 1px solid var(--border, #ddd);
+  border-radius: 8px 0 0 8px;
+  background: var(--bg, #f8f9fa);
+  box-sizing: border-box;
+}
+#registration .intl-tel-input .selected-flag {
+  height: 44px;
+  border-radius: 8px 0 0 8px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  padding: 0 8px 0 10px;
+}
+#registration
+  .intl-tel-input.allow-dropdown
+  .flag-container:hover
+  .selected-flag {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px 0 0 8px;
+}
+
+/* Country dropdown */
+#registration .intl-tel-input .country-list {
+  position: absolute !important;
+  top: 44px;
+  left: 0;
+  z-index: 9999 !important;
+  min-width: 300px;
+  border-radius: 0 0 8px 8px;
+  border-color: var(--border, #ccc) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  max-height: 220px;
+  overflow-y: auto;
+}
+#registration .intl-tel-input .country-list .country.highlight,
+#registration .intl-tel-input .country-list .country:hover {
+  background-color: rgba(35, 106, 37, 0.07);
+}
+.intl-tel-input .hide,
+.intl-tel-input .country-list.hide {
+  display: none !important;
+}
+
+/* ── Submit button ───────────────────────────────────────────────────── */
+#registration p[align="center"] {
+  text-align: center;
+  margin-top: 28px;
+}
+#registration .btn-primary[type="submit"] {
+  padding: 12px 48px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  min-width: 220px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  #registration > form {
+    padding: 24px 16px;
+    border-radius: 12px;
+  }
+  #registration .btn-primary[type="submit"] {
+    width: 100%;
+    min-width: unset;
+  }
+}

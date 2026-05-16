@@ -1,0 +1,11 @@
+# WHMCS Six Theme Configuration File
+
+name: "Six"
+description: "The Default Theme for WHMCS Version 6.0 – customised for CamDigit (WHMCS 9 compatible)"
+author: "WHMCS Limited"
+properties:
+  serverSidePagination: false # Defines client side will handle pagination
+provides:
+  bootstrap: 5.3.2
+  jquery: 3.7.1
+  fontawesome: 5.10.1
