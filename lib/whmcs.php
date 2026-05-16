@@ -23,7 +23,7 @@ const WHMCS_API_IDENTIFIER = 'ZvGKrMb57QMcWumKVbdmgYNvoCvepkID';
 const WHMCS_API_SECRET     = 'LybPsvebnvaF2FpNS0fzba0KGxNGufbh';
 const SITE_URL             = 'https://shop-camdigit.cm';
 const COMPANY_NAME         = 'CamDigit';
-const LOGO_URL             = SITE_URL . '/img/logo-camdigit.png';   // place logo at <whmcs_root>/img/logo-camdigit.png
+const LOGO_URL             = SITE_URL . '/templates/six/img/logo/logo-camdigit-small-small.png';
 
 // .cm nameservers for cmnic-registered domains
 const CM_NS1 = 'ns1.camdigit.cm';
@@ -350,6 +350,7 @@ function cd_render_topbar(): void
 
 function cd_render_hero(string $title, ?string $subtitle = null): void
 {
+    $crumbTitle = trim((string)preg_replace('/\s+/', ' ', strip_tags($title)));
     ?>
 <section class="cd-hero">
     <div class="container">
@@ -361,7 +362,7 @@ function cd_render_hero(string $title, ?string $subtitle = null): void
             <nav class="cd-breadcrumb">
                 <a href="<?= SITE_URL ?>/"><?= t('Home','Accueil') ?></a>
                 <i class="fa fa-chevron-right"></i>
-                <span><?= htmlspecialchars($title) ?></span>
+                <span><?= htmlspecialchars($crumbTitle, ENT_QUOTES) ?></span>
             </nav>
         </div>
     </div>
