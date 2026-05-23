@@ -1,0 +1,102 @@
+
+.cta-contact-left {
+    .cta-contact-button {
+        @include flex;
+        gap: 30px;
+        
+        h4 {
+            font-weight: 400;
+            text-transform: lowercase;
+
+            i {
+                color: $white;
+                margin-right: 5px;
+            }
+
+            a {
+                color: $white;
+            }
+        }
+    }
+}
+
+.cta-contact-image {
+    margin-bottom: -130px;
+
+    @include breakpoint (max-xxl){
+        margin-bottom: -250px;
+    }
+
+    @include breakpoint (max-xl){
+        margin-bottom: -140px;
+    }
+
+    @include breakpoint (max-lg){
+        margin-bottom: -80px;
+    }
+
+    img {
+        max-width: 100%;
+    }
+}
+
+.cta-contact-wrapper {
+    background-color: $theme-color;
+    padding: 100px 90px;
+    border-radius: 20px; 
+    @include flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: -150px;
+    z-index: 9;
+    gap: 30px;
+
+    @include breakpoint (max-xl){
+        flex-wrap: wrap;
+        padding: 70px 60px;
+    }
+
+    @include breakpoint (max-lg){
+        padding: 60px 50px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    @include breakpoint (max-md){
+        padding: 50px 40px;
+    }
+
+    @include breakpoint (max-sm){
+        padding: 40px 30px;
+    }
+
+    .cta-contact-image {
+        position: absolute;
+        left: 90px;
+        top: 40px;
+
+        @include breakpoint (max-xxl){
+            display: none;
+        }
+    }
+
+    .section-title {
+        margin-left: 300px;
+
+        @include breakpoint (max-xxl){
+           margin-left: 0;
+        }
+
+        h2 {
+            font-size: 36px;
+
+            @include breakpoint (max-md){
+               font-size: 32px;
+            }
+
+            @include breakpoint (max-sm){
+                font-size: 28px;
+            }
+        }
+    }
+}

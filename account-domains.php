@@ -5,6 +5,7 @@
  */
 declare(strict_types=1);
 require_once __DIR__ . '/lib/whmcs.php';
+require_once __DIR__ . '/lib/account_nav.php';
 cd_require_login();
 
 $clientId = cd_client_id();
@@ -32,6 +33,8 @@ function cd_domain_pill(string $status): string {
     return 'cd-pill-neutral';
 }
 ?>
+
+<?php cd_account_layout_start('domains'); ?>
 
 <div class="cd-card">
     <?php if ($errors): ?>
@@ -68,8 +71,9 @@ function cd_domain_pill(string $status): string {
                         <td><span class="cd-pill <?= $autoRenew ? 'cd-pill-ok' : 'cd-pill-neutral' ?>"><?= $autoRenew ? t('On','Activé') : t('Off','Désactivé') ?></span></td>
                         <td><span class="cd-pill <?= cd_domain_pill((string)$d['status']) ?>"><?= htmlspecialchars((string)$d['status']) ?></span></td>
                         <td style="text-align:right">
-                            <a href="<?= SITE_URL ?>/clientarea.php?action=domaindetails&domainid=<?= (int)$d['id'] ?>">
-                                <?= t('Manage','Gérer') ?> →
+                            <a class="cd-btn cd-btn-ghost" style="padding:6px 14px;font-size:12px"
+                               href="<?= SITE_URL ?>/account-domain.php?id=<?= (int)$d['id'] ?>">
+                                <?= t('Manage','Gérer') ?> <i class="fa fa-arrow-right"></i>
                             </a>
                         </td>
                     </tr>
@@ -79,10 +83,5 @@ function cd_domain_pill(string $status): string {
     <?php endif ?>
 </div>
 
-<p style="text-align:center;margin-top:8px">
-    <a href="<?= SITE_URL ?>/account.php" class="cd-link-soft">
-        <i class="fa fa-arrow-left"></i> <?= t('Back to My Account','Retour à mon compte') ?>
-    </a>
-</p>
-
+<?php cd_account_layout_end(); ?>
 <?php cd_render_foot(); ?>

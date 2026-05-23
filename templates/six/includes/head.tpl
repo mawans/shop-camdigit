@@ -16,7 +16,10 @@
 {assetExists file="custom.css"}
 <link href="{$__assetPath__}?v={$versionHash}" rel="stylesheet">
 {/assetExists}
+<link rel="icon" type="image/png" sizes="32x32" href="{$WEB_ROOT}/templates/{$template}/img/logo/logo-camdigit-small-small.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="{$WEB_ROOT}/templates/{$template}/img/logo/logo-camdigit-small-small.png" />
 <link rel="shortcut icon" href="{$WEB_ROOT}/templates/{$template}/img/logo/logo-camdigit-small-small.png" />
+<link rel="apple-touch-icon" href="{$WEB_ROOT}/templates/{$template}/img/logo/logo-camdigit-small-small.png" />
 <!-- WHMCS Required JS Variables -->
 <script type="text/javascript">
     var csrfToken = '{$token}',
@@ -28,6 +31,24 @@
     {if $captcha}{$captcha->getPageJs()}{/if}
 </script>
 <script src="{assetPath file='scripts.min.js'}?v={$versionHash}"></script>
+
+<!-- CamDigit realtime cart — floating pill on every page -->
+<link rel="stylesheet" href="{$WEB_ROOT}/templates/{$template}/css/hds-cart.css">
+<script>
+window.HDS_CFG = {
+    proxy:   '{$WEB_ROOT}/api-proxy.php',
+    cartApi: '{$WEB_ROOT}/cart-api.php',
+    site:    '{$WEB_ROOT}',
+    lang:    '{$language}'
+};
+</script>
+<script src="{$WEB_ROOT}/templates/{$template}/js/hds-cart.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.HDS) HDS.init(window.HDS_CFG);
+});
+</script>
+
 {if $templatefile == "viewticket" && !$loggedin}
   <meta name="robots" content="noindex" />
 {/if}

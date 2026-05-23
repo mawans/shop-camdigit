@@ -5,6 +5,7 @@
  */
 declare(strict_types=1);
 require_once __DIR__ . '/lib/whmcs.php';
+require_once __DIR__ . '/lib/account_nav.php';
 cd_require_login();
 
 $clientId = cd_client_id();
@@ -32,6 +33,8 @@ function cd_status_pill(string $status): string {
     return 'cd-pill-neutral';
 }
 ?>
+
+<?php cd_account_layout_start('services'); ?>
 
 <div class="cd-card">
     <?php if ($errors): ?>
@@ -64,8 +67,9 @@ function cd_status_pill(string $status): string {
                         <td><?= htmlspecialchars((string)($p['nextduedate'] ?? '')) ?></td>
                         <td><span class="cd-pill <?= cd_status_pill((string)$p['status']) ?>"><?= htmlspecialchars((string)$p['status']) ?></span></td>
                         <td style="text-align:right">
-                            <a href="<?= SITE_URL ?>/clientarea.php?action=productdetails&id=<?= (int)$p['id'] ?>">
-                                <?= t('Manage','Gérer') ?> →
+                            <a class="cd-btn cd-btn-ghost" style="padding:6px 14px;font-size:12px"
+                               href="<?= SITE_URL ?>/account-service.php?id=<?= (int)$p['id'] ?>">
+                                <?= t('Manage','Gérer') ?> <i class="fa fa-arrow-right"></i>
                             </a>
                         </td>
                     </tr>
@@ -75,10 +79,5 @@ function cd_status_pill(string $status): string {
     <?php endif ?>
 </div>
 
-<p style="text-align:center;margin-top:8px">
-    <a href="<?= SITE_URL ?>/account.php" class="cd-link-soft">
-        <i class="fa fa-arrow-left"></i> <?= t('Back to My Account','Retour à mon compte') ?>
-    </a>
-</p>
-
+<?php cd_account_layout_end(); ?>
 <?php cd_render_foot(); ?>

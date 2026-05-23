@@ -1,197 +1,254 @@
 <?php
 /**
- * CamDigit Client Area Dashboard
- * ─────────────────────────────────────────────────────────────────────────────
- * Upload to: <whmcs_root>/account.php
- *
- * Shows a logged-in client's summary: profile + recent products, domains and
- * unpaid invoices. All data pulled server-side from WHMCS API.
- * ─────────────────────────────────────────────────────────────────────────────
+ * CamDigit Main — Account Dashboard
+ * Pulls real data from WHMCS via API: client details, products, domains, invoices.
  */
 declare(strict_types=1);
 require_once __DIR__ . '/lib/whmcs.php';
+require_once __DIR__ . '/lib/layout.php';
 
 cd_require_login();
-$clientId = cd_client_id();
+$cid = cd_client_id();
 
-$client     = [];
-$products   = [];
-$domains    = [];
-$invoices   = [];
-$errors     = [];
+// ── Pull data from WHMCS ────────────────────────────────────────────────────
+$client = ['firstname' => '', 'lastname' => '', 'email' => '', 'credit' => 0, 'currency_code' => 'XAF'];
+$services = [];
+$domains  = [];
+$invoices = ['unpaid' => [], 'recent' => []];
+$err = null;
 
 try {
-    $r = whmcs_api('GetClientsDetails', ['clientid' => $clientId, 'stats' => true]);
-    if (($r['result'] ?? '') === 'success') {
-        $client = $r['client'] ?? [];
-        $stats  = $r['stats'] ?? [];
+    $r = whmcs_api('GetClientsDetails', ['clientid' => $cid, 'stats' => true]);
+    $client = $r['client'] ?? $client;
+
+    $sp = whmcs_api('GetClientsProducts', ['clientid' => $cid]);
+    $services = $sp['products']['product'] ?? [];
+
+    $dn = whmcs_api('GetClientsDomains', ['clientid' => $cid]);
+    $domains = $dn['domains']['domain'] ?? [];
+
+    $iv = whmcs_api('GetInvoices', ['userid' => $cid, 'limitnum' => 25]);
+    $allInv = $iv['invoices']['invoice'] ?? [];
+    foreach ($allInv as $i) {
+        if (in_array(strtolower((string)($i['status'] ?? '')), ['unpaid','overdue'], true)) {
+            $invoices['unpaid'][] = $i;
+        } else {
+            $invoices['recent'][] = $i;
+        }
     }
-} catch (RuntimeException $e) { $errors[] = $e->getMessage(); }
-
-try {
-    $r = whmcs_api('GetClientsProducts', ['clientid' => $clientId, 'limitnum' => 5]);
-    $products = $r['products']['product'] ?? [];
-} catch (RuntimeException $e) { /* non-fatal */ }
-
-try {
-    $r = whmcs_api('GetClientsDomains', ['clientid' => $clientId, 'limitnum' => 5]);
-    $domains = $r['domains']['domain'] ?? [];
-} catch (RuntimeException $e) { /* non-fatal */ }
-
-try {
-    $r = whmcs_api('GetInvoices', ['userid' => $clientId, 'status' => 'Unpaid', 'limitnum' => 10]);
-    $invoices = $r['invoices']['invoice'] ?? [];
-} catch (RuntimeException $e) { /* non-fatal */ }
-
-$firstName = (string)($client['firstname'] ?? '');
-$lastName  = (string)($client['lastname']  ?? '');
-$dueCount  = isset($stats['numdueinvoices']) ? (int)$stats['numdueinvoices'] : 0;
-
-cd_render_head(
-    t('My Account', 'Mon Compte'),
-    t('Welcome back, <span style="color:var(--theme2,#ffa31a)">', 'Bon retour, <span style="color:var(--theme2,#ffa31a)">')
-        . htmlspecialchars(trim($firstName . ' ' . $lastName) ?: t('Client','Client')) . '</span>',
-    t('Manage your services, domains, and invoices.',
-      'Gérez vos services, domaines et factures.')
-);
-?>
-
-<?php if ($errors): ?>
-    <div class="cd-alert cd-alert-error">
-        <?php foreach ($errors as $e): ?><div><?= htmlspecialchars($e) ?></div><?php endforeach ?>
-    </div>
-<?php endif ?>
-
-<!-- Stat boxes -->
-<div class="cd-stats-row">
-    <div class="cd-stat-box">
-        <i class="fa fa-cubes"></i>
-        <div class="cd-stat-num"><?= count($products) ?></div>
-        <div class="cd-stat-lbl"><?= t('Active Services','Services actifs') ?></div>
-    </div>
-    <div class="cd-stat-box">
-        <i class="fa fa-globe-africa"></i>
-        <div class="cd-stat-num"><?= count($domains) ?></div>
-        <div class="cd-stat-lbl"><?= t('Registered Domains','Domaines enregistrés') ?></div>
-    </div>
-    <div class="cd-stat-box">
-        <i class="fa fa-file-invoice-dollar"></i>
-        <div class="cd-stat-num"><?= $dueCount ?></div>
-        <div class="cd-stat-lbl"><?= t('Unpaid Invoices','Factures impayées') ?></div>
-    </div>
-</div>
-
-<div class="cd-card">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px">
-        <div>
-            <p class="cd-muted" style="margin:0">
-                <i class="fa fa-envelope"></i> <?= htmlspecialchars((string)($client['email'] ?? '')) ?>
-                &nbsp;·&nbsp; <?= t('Client ID','ID Client') ?>: <strong>#<?= (int)$clientId ?></strong>
-            </p>
-        </div>
-        <div>
-            <?php if ($dueCount > 0): ?>
-                <span class="cd-pill cd-pill-warn"><i class="fa fa-exclamation-circle"></i> <?= $dueCount ?> <?= t('unpaid','impayée(s)') ?></span>
-            <?php else: ?>
-                <span class="cd-pill cd-pill-ok"><i class="fa fa-check"></i> <?= t('All invoices paid','Tout est payé') ?></span>
-            <?php endif ?>
-        </div>
-    </div>
-
-    <div class="cd-divider"></div>
-
-    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:18px">
-        <a class="cd-btn" href="<?= SITE_URL ?>/order-domain.php"><i class="fa fa-globe"></i> <?= t('Register a domain','Enregistrer un domaine') ?></a>
-        <a class="cd-btn cd-btn-secondary" href="<?= SITE_URL ?>/order-hosting.php"><i class="fa fa-server"></i> <?= t('Buy hosting','Acheter hébergement') ?></a>
-        <a class="cd-btn cd-btn-secondary" href="<?= SITE_URL ?>/account-services.php"><i class="fa fa-cubes"></i> <?= t('My services','Mes services') ?></a>
-        <a class="cd-btn cd-btn-secondary" href="<?= SITE_URL ?>/account-domains.php"><i class="fa fa-globe-africa"></i> <?= t('My domains','Mes domaines') ?></a>
-        <a class="cd-btn cd-btn-secondary" href="<?= SITE_URL ?>/account-invoices.php"><i class="fa fa-file-invoice"></i> <?= t('My invoices','Mes factures') ?></a>
-    </div>
-</div>
-
-<?php
-// Helper: map WHMCS status string to a pill class
-function cd_status_pill(string $status): string {
-    $s = strtolower($status);
-    if (in_array($s, ['paid','active','registered','answered','closed'], true)) return 'cd-pill-ok';
-    if (in_array($s, ['unpaid','pending','pending registration','overdue','customer-reply'], true)) return 'cd-pill-warn';
-    if (in_array($s, ['cancelled','suspended','terminated','expired','fraud'], true)) return 'cd-pill-err';
-    return 'cd-pill-neutral';
+} catch (Throwable $e) {
+    $err = $e->getMessage();
 }
+
+$countActive = 0; $countSuspended = 0;
+foreach ($services as $s) {
+    $st = strtolower((string)($s['status'] ?? ''));
+    if ($st === 'active')          $countActive++;
+    elseif ($st === 'suspended')   $countSuspended++;
+}
+$countDomains = count($domains);
+$countUnpaid  = count($invoices['unpaid']);
+
+function acc_pill(string $status): string
+{
+    $st = strtolower($status);
+    $map = [
+        'active'    => ['ok',     'Active'],
+        'pending'   => ['warn',   'Pending'],
+        'suspended' => ['err',    'Suspended'],
+        'terminated'=> ['neutral','Terminated'],
+        'cancelled' => ['neutral','Cancelled'],
+        'expired'   => ['err',    'Expired'],
+        'paid'      => ['ok',     'Paid'],
+        'unpaid'    => ['warn',   'Unpaid'],
+        'overdue'   => ['err',    'Overdue'],
+        'refunded'  => ['neutral','Refunded'],
+    ];
+    [$cls, $lbl] = $map[$st] ?? ['neutral', ucfirst($status ?: '—')];
+    return '<span class="cdm-pill cdm-pill-' . $cls . '">' . htmlspecialchars($lbl) . '</span>';
+}
+
+$first = htmlspecialchars(trim((string)$client['firstname']) ?: t('there','vous'));
+
+cdm_head([
+    'title'         => t('Dashboard','Tableau de bord'),
+    'hero_title'    => t('Hello, <span class="accent">' . $first . '</span>',
+                         'Bonjour, <span class="accent">' . $first . '</span>'),
+    'hero_subtitle' => t('Manage your services, domains and invoices from one place.',
+                         'Gérez vos services, domaines et factures depuis un seul endroit.'),
+    'breadcrumb'    => t('Dashboard','Tableau de bord'),
+]);
 ?>
 
-<?php if ($invoices): ?>
-<div class="cd-card">
-    <h2><i class="fa fa-file-invoice" style="color:var(--theme2,#ffa31a);margin-right:8px"></i><?= t('Unpaid invoices','Factures impayées') ?></h2>
-    <table>
-        <thead><tr>
-            <th>#</th><th><?= t('Due date','Échéance') ?></th>
-            <th><?= t('Total','Total') ?></th><th></th>
-        </tr></thead>
-        <tbody>
-            <?php foreach ($invoices as $inv): ?>
-                <tr>
-                    <td><strong>#<?= (int)$inv['id'] ?></strong></td>
-                    <td><?= htmlspecialchars((string)($inv['duedate'] ?? '')) ?></td>
-                    <td><strong style="color:var(--theme,#236a25)"><?= htmlspecialchars((string)($inv['total'] ?? '')) ?></strong></td>
-                    <td style="text-align:right">
-                        <a class="cd-btn cd-btn-ghost" style="padding:7px 16px;font-size:12px"
-                           href="<?= SITE_URL ?>/account-invoices.php?id=<?= (int)$inv['id'] ?>">
-                            <?= t('View & Pay','Voir & Payer') ?> <i class="fa fa-arrow-right"></i>
-                        </a>
-                    </td>
-                </tr>
-            <?php endforeach ?>
-        </tbody>
-    </table>
-</div>
-<?php endif ?>
+<div class="cdm-app">
 
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px">
-    <div class="cd-card">
-        <h2><i class="fa fa-cubes" style="color:var(--theme2,#ffa31a);margin-right:8px"></i><?= t('Recent services','Services récents') ?></h2>
-        <?php if (!$products): ?>
-            <p class="cd-muted"><?= t('No active services yet.','Aucun service actif.') ?></p>
-            <a class="cd-btn" href="<?= SITE_URL ?>/order-hosting.php"><?= t('Browse hosting','Voir l\'hébergement') ?></a>
-        <?php else: ?>
-            <ul style="list-style:none;padding:0;margin:0">
-                <?php foreach ($products as $p): ?>
-                    <li style="padding:14px 0;border-bottom:1px solid #f0f4f8">
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-                            <div>
-                                <strong><?= htmlspecialchars((string)$p['name']) ?></strong><br>
-                                <span class="cd-muted" style="font-size:13px"><?= htmlspecialchars((string)($p['domain'] ?? '')) ?></span>
-                            </div>
-                            <span class="cd-pill <?= cd_status_pill((string)$p['status']) ?>"><?= htmlspecialchars((string)$p['status']) ?></span>
-                        </div>
-                    </li>
-                <?php endforeach ?>
-            </ul>
-            <a href="<?= SITE_URL ?>/account-services.php" style="display:inline-block;margin-top:14px;font-weight:600"><?= t('View all','Voir tout') ?> →</a>
-        <?php endif ?>
+<?php cdm_account_sidebar('dashboard'); ?>
+
+<div>
+    <?php if ($err): ?>
+        <div class="cdm-alert cdm-alert-err">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div><strong><?= t('Could not load account data','Impossible de charger les données') ?></strong><br><?= htmlspecialchars($err) ?></div>
+        </div>
+    <?php endif ?>
+
+    <!-- Stats -->
+    <div class="cdm-stats">
+        <div class="cdm-stat">
+            <div class="cdm-stat-icon green"><i class="fa-solid fa-cubes"></i></div>
+            <div>
+                <div class="cdm-stat-label"><?= t('Active services','Services actifs') ?></div>
+                <div class="cdm-stat-value"><?= $countActive ?><?php if ($countSuspended): ?> <small style="font-size:13px;color:var(--err);font-weight:600">+<?= $countSuspended ?> <?= t('susp.','susp.') ?></small><?php endif ?></div>
+            </div>
+        </div>
+        <div class="cdm-stat">
+            <div class="cdm-stat-icon orange"><i class="fa-solid fa-globe"></i></div>
+            <div>
+                <div class="cdm-stat-label"><?= t('Domains','Domaines') ?></div>
+                <div class="cdm-stat-value"><?= $countDomains ?></div>
+            </div>
+        </div>
+        <div class="cdm-stat">
+            <div class="cdm-stat-icon red"><i class="fa-solid fa-file-invoice"></i></div>
+            <div>
+                <div class="cdm-stat-label"><?= t('Unpaid invoices','Factures impayées') ?></div>
+                <div class="cdm-stat-value"><?= $countUnpaid ?></div>
+            </div>
+        </div>
+        <div class="cdm-stat">
+            <div class="cdm-stat-icon blue"><i class="fa-solid fa-wallet"></i></div>
+            <div>
+                <div class="cdm-stat-label"><?= t('Account credit','Crédit') ?></div>
+                <div class="cdm-stat-value" style="font-size:18px"><?= htmlspecialchars((string)($client['currency_code'] ?? '')) ?> <?= number_format((float)($client['credit'] ?? 0), 2, ',', ' ') ?></div>
+            </div>
+        </div>
     </div>
-    <div class="cd-card">
-        <h2><i class="fa fa-globe-africa" style="color:var(--theme2,#ffa31a);margin-right:8px"></i><?= t('Recent domains','Domaines récents') ?></h2>
-        <?php if (!$domains): ?>
-            <p class="cd-muted"><?= t('No domains registered yet.','Aucun domaine enregistré.') ?></p>
-            <a class="cd-btn" href="<?= SITE_URL ?>/order-domain.php"><?= t('Register a domain','Enregistrer un domaine') ?></a>
-        <?php else: ?>
-            <ul style="list-style:none;padding:0;margin:0">
-                <?php foreach ($domains as $d): ?>
-                    <li style="padding:14px 0;border-bottom:1px solid #f0f4f8">
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-                            <div>
-                                <strong><?= htmlspecialchars((string)$d['domainname']) ?></strong><br>
-                                <span class="cd-muted" style="font-size:13px"><?= t('Renews','Renouvellement') ?>: <?= htmlspecialchars((string)($d['nextduedate'] ?? '')) ?></span>
-                            </div>
-                            <span class="cd-pill <?= cd_status_pill((string)$d['status']) ?>"><?= htmlspecialchars((string)$d['status']) ?></span>
-                        </div>
-                    </li>
+
+    <!-- Unpaid invoices -->
+    <?php if ($invoices['unpaid']): ?>
+    <div class="cdm-card">
+        <div class="cdm-card-head" style="background:linear-gradient(135deg,#dc2626,#991b1b)">
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> <?= t('Action required','Action requise') ?></h3>
+            <span class="meta"><?= $countUnpaid ?> <?= $countUnpaid === 1 ? t('invoice','facture') : t('invoices','factures') ?></span>
+        </div>
+        <div class="cdm-card-body">
+            <p class="cdm-muted cdm-mb-2"><?= t('You have unpaid invoices. Settle them to keep your services active.',
+                                                 'Vous avez des factures impayées. Réglez-les pour garder vos services actifs.') ?></p>
+            <div class="cdm-table-wrap">
+                <table class="cdm-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th><?= t('Due','Échéance') ?></th>
+                            <th><?= t('Total','Total') ?></th>
+                            <th><?= t('Status','Statut') ?></th>
+                            <th class="right"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($invoices['unpaid'] as $i): ?>
+                        <tr>
+                            <td data-label="#">#<?= htmlspecialchars((string)$i['id']) ?></td>
+                            <td data-label="<?= t('Due','Échéance') ?>"><?= htmlspecialchars((string)($i['duedate'] ?? '')) ?></td>
+                            <td data-label="<?= t('Total','Total') ?>"><strong><?= number_format((float)($i['total'] ?? 0), 2, ',', ' ') ?> <?= htmlspecialchars((string)($i['currencycode'] ?? '')) ?></strong></td>
+                            <td data-label="<?= t('Status','Statut') ?>"><?= acc_pill((string)($i['status'] ?? '')) ?></td>
+                            <td class="right">
+                                <a href="<?= SITE_URL ?>/account-invoices.php?id=<?= (int)$i['id'] ?>" class="cdm-btn cdm-btn-accent cdm-btn-sm">
+                                    <i class="fa-solid fa-credit-card"></i> <?= t('Pay','Payer') ?>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <?php endif ?>
+
+    <!-- Two-column: services / domains -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px" class="dash-cols">
+    <style>@media(max-width:767px){.dash-cols{grid-template-columns:1fr !important}}</style>
+
+        <div class="cdm-card">
+            <div class="cdm-card-head">
+                <h3><i class="fa-solid fa-cubes"></i> <?= t('My Services','Mes Services') ?></h3>
+                <a href="<?= SITE_URL ?>/account-services.php" style="color:rgba(255,255,255,.9);font-size:13px;font-weight:600">
+                    <?= t('View all','Voir tout') ?> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="cdm-card-body" style="padding:0">
+            <?php if (empty($services)): ?>
+                <div class="cdm-empty" style="box-shadow:none;border:0;padding:32px 24px">
+                    <div class="cdm-empty-icon" style="width:64px;height:64px;font-size:24px"><i class="fa-solid fa-cubes"></i></div>
+                    <h2 style="font-size:17px"><?= t('No services yet','Aucun service') ?></h2>
+                    <p style="font-size:14px"><?= t('Pick a hosting plan to launch your site.','Choisissez un hébergement pour lancer votre site.') ?></p>
+                    <a class="cdm-btn cdm-btn-sm" href="<?= SITE_URL ?>/order-hosting.php"><?= t('Browse hosting','Voir l\'hébergement') ?></a>
+                </div>
+            <?php else: ?>
+                <?php foreach (array_slice($services, 0, 4) as $s): ?>
+                <div style="padding:14px 22px;border-bottom:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center;gap:12px">
+                    <div style="min-width:0;flex:1">
+                        <div style="font-weight:600;font-size:14px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= htmlspecialchars((string)($s['name'] ?? $s['groupname'] ?? '—')) ?></div>
+                        <div style="font-size:12px;color:var(--ink-mute);margin-top:2px"><?= htmlspecialchars((string)($s['domain'] ?? '')) ?></div>
+                    </div>
+                    <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+                        <?= acc_pill((string)($s['status'] ?? '')) ?>
+                        <a href="<?= SITE_URL ?>/account-service.php?id=<?= (int)($s['id'] ?? 0) ?>" class="cdm-btn cdm-btn-ghost cdm-btn-sm"><i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
                 <?php endforeach ?>
-            </ul>
-            <a href="<?= SITE_URL ?>/account-domains.php" style="display:inline-block;margin-top:14px;font-weight:600"><?= t('View all','Voir tout') ?> →</a>
-        <?php endif ?>
+            <?php endif ?>
+            </div>
+        </div>
+
+        <div class="cdm-card">
+            <div class="cdm-card-head">
+                <h3><i class="fa-solid fa-globe"></i> <?= t('My Domains','Mes Domaines') ?></h3>
+                <a href="<?= SITE_URL ?>/account-domains.php" style="color:rgba(255,255,255,.9);font-size:13px;font-weight:600">
+                    <?= t('View all','Voir tout') ?> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="cdm-card-body" style="padding:0">
+            <?php if (empty($domains)): ?>
+                <div class="cdm-empty" style="box-shadow:none;border:0;padding:32px 24px">
+                    <div class="cdm-empty-icon" style="width:64px;height:64px;font-size:24px"><i class="fa-solid fa-globe"></i></div>
+                    <h2 style="font-size:17px"><?= t('No domains yet','Aucun domaine') ?></h2>
+                    <p style="font-size:14px"><?= t('Register your perfect name.','Réservez votre nom de marque.') ?></p>
+                    <a class="cdm-btn cdm-btn-sm" href="<?= SITE_URL ?>/order-domain.php"><?= t('Find a domain','Chercher un domaine') ?></a>
+                </div>
+            <?php else: ?>
+                <?php foreach (array_slice($domains, 0, 4) as $d): ?>
+                <div style="padding:14px 22px;border-bottom:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center;gap:12px">
+                    <div style="min-width:0;flex:1">
+                        <div style="font-weight:600;font-size:14px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= htmlspecialchars((string)($d['domainname'] ?? '—')) ?></div>
+                        <div style="font-size:12px;color:var(--ink-mute);margin-top:2px"><?= t('Expires','Expire') ?>: <?= htmlspecialchars((string)($d['expirydate'] ?? '—')) ?></div>
+                    </div>
+                    <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+                        <?= acc_pill((string)($d['status'] ?? '')) ?>
+                        <a href="<?= SITE_URL ?>/account-domain.php?id=<?= (int)($d['id'] ?? 0) ?>" class="cdm-btn cdm-btn-ghost cdm-btn-sm"><i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <?php endforeach ?>
+            <?php endif ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="cdm-card cdm-mt-3" style="background:linear-gradient(135deg,#f3f7fb,#e8eef6);border:0;box-shadow:none">
+        <div class="cdm-card-body">
+            <h3 style="margin:0 0 14px;font-size:16px"><?= t('Quick actions','Actions rapides') ?></h3>
+            <div class="cdm-flex cdm-wrap cdm-gap-1">
+                <a class="cdm-btn cdm-btn-accent" href="<?= SITE_URL ?>/order-hosting.php"><i class="fa-solid fa-server"></i> <?= t('Order hosting','Commander hébergement') ?></a>
+                <a class="cdm-btn" href="<?= SITE_URL ?>/order-domain.php"><i class="fa-solid fa-globe"></i> <?= t('Register a domain','Enregistrer un domaine') ?></a>
+                <a class="cdm-btn cdm-btn-ghost" href="<?= SITE_URL ?>/submitticket.php"><i class="fa-solid fa-life-ring"></i> <?= t('Open a ticket','Ouvrir un ticket') ?></a>
+                <a class="cdm-btn cdm-btn-ghost" href="<?= SITE_URL ?>/account-profile.php"><i class="fa-solid fa-id-card"></i> <?= t('Update profile','Modifier le profil') ?></a>
+            </div>
+        </div>
     </div>
 </div>
 
-<?php cd_render_foot(); ?>
+</div>
+
+<?php cdm_foot(); ?>

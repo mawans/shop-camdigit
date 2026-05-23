@@ -8,6 +8,7 @@
  */
 declare(strict_types=1);
 require_once __DIR__ . '/lib/whmcs.php';
+require_once __DIR__ . '/lib/account_nav.php';
 cd_require_login();
 
 $clientId  = cd_client_id();
@@ -37,6 +38,7 @@ if ($invoiceId > 0) {
     );
     ?>
 
+    <?php cd_account_layout_start('invoices'); ?>
     <?php if ($errors): ?>
         <div class="cd-alert cd-alert-error">
             <?php foreach ($errors as $e): ?><div><?= htmlspecialchars($e) ?></div><?php endforeach ?>
@@ -100,7 +102,8 @@ if ($invoiceId > 0) {
         </a>
     </p>
 
-    <?php cd_render_foot();
+    <?php cd_account_layout_end();
+    cd_render_foot();
     exit;
 }
 
@@ -120,6 +123,7 @@ cd_render_head(
 );
 ?>
 
+<?php cd_account_layout_start('invoices'); ?>
 <div class="cd-card">
     <?php if ($errors): ?>
         <div class="cd-alert cd-alert-error">
@@ -169,10 +173,5 @@ cd_render_head(
     <?php endif ?>
 </div>
 
-<p style="text-align:center;margin-top:8px">
-    <a href="<?= SITE_URL ?>/account.php" class="cd-link-soft">
-        <i class="fa fa-arrow-left"></i> <?= t('Back to My Account','Retour à mon compte') ?>
-    </a>
-</p>
-
+<?php cd_account_layout_end(); ?>
 <?php cd_render_foot(); ?>

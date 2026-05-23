@@ -1,0 +1,81 @@
+
+.faq-wrapper {
+    .faq-image {
+        img {
+            @include imgw;
+        }
+    }
+
+    .faq-content {
+        margin-left: 40px;
+
+        @include breakpoint (max-xl){
+            margin-left: 20px;
+        }
+
+        @include breakpoint (max-lg){
+            margin-left: 0;
+        }
+
+        .accordion-item {
+            border: 0;
+            background-color: transparent;
+    
+            .accordion-header { 
+                .accordion-button { 
+                    font-weight: 600;
+                    color: $theme-color;
+                    letter-spacing: -.2px;
+                    border: 0;
+                    border-radius: 0;
+                    box-shadow: none;
+                    background-color: transparent;
+                    text-transform: capitalize;
+                    font-size: 22px;
+                   
+                    padding: 25px 0;
+    
+                    &::after {
+                        font-weight: 500;
+                        transition: all 0.3s ease-in-out !important;
+                        background-image: url(../../assets/img/chevron-right.svg);
+                        color: $theme-color;
+                    }
+                    &:not(.collapsed)::after {
+                        background-image: url(../../assets/img/chevron-down.svg);
+                        font-weight: 500;
+                        color: $theme-color;
+                        transform: rotate(0);
+                    }
+    
+                    &.collapsed {
+                        background-color: transparent;
+                        color: $header-color;
+                        //border-bottom: none;
+                        border-bottom: 1px solid $border-color;
+                    }
+                  
+                }
+            }
+    
+            .accordion-collapse { 
+    
+                .accordion-body {
+                    padding-right: 50px;
+                    padding-left: 0;
+                   // padding-top: 15px;
+                    color: $text-color;
+                    background-color: transparent;
+                    padding-top: 0;
+                    margin-top: -10px;
+                    border-bottom: 1px solid $border-color;
+                    padding-bottom: 20px;
+    
+                    @include breakpoint (max-lg){
+                        padding-right: 30px;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,3 +1,153 @@
+<!-- Home Domain Search Section — fully self-contained (no external CSS deps) -->
+{literal}
+<style>
+.cdh-section { padding: 60px 0 40px; position: relative; }
+.cdh-card {
+    background: #fff;
+    border-radius: 22px;
+    padding: 38px 36px;
+    box-shadow: 0 30px 80px -20px rgba(15, 13, 29, 0.18);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    max-width: 920px;
+    margin: -70px auto 0;
+    position: relative;
+    z-index: 5;
+}
+.cdh-card::before {
+    content: ""; position: absolute; top: 0; left: 32px; right: 32px; height: 4px;
+    background: linear-gradient(90deg, #236a25 0%, #ffa31a 100%);
+    border-radius: 0 0 6px 6px;
+}
+.cdh-head { text-align: center; margin-bottom: 26px; }
+.cdh-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 99px;
+    background: rgba(35, 106, 37, 0.08); color: #236a25;
+    font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 12px;
+    font-family: 'Jost', sans-serif;
+}
+.cdh-eyebrow .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+    animation: cdhPulse 2s ease-in-out infinite;
+}
+@keyframes cdhPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
+.cdh-head h2 {
+    font-size: clamp(26px, 3.5vw, 36px);
+    font-weight: 800;
+    color: #0f0d1d;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    font-family: 'Jost', sans-serif;
+}
+.cdh-head h2 .accent { color: #ffa31a; }
+.cdh-head p { color: #6b7785; font-size: 15px; margin: 0; font-family: 'Jost', sans-serif; }
+
+.cdh-form {
+    display: flex; align-items: center; gap: 6px;
+    background: #f6f8fb; border-radius: 99px;
+    padding: 7px; margin: 0 auto; max-width: 720px;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.cdh-form:focus-within {
+    border-color: rgba(255, 163, 26, 0.5);
+    box-shadow: 0 0 0 4px rgba(255, 163, 26, 0.12);
+    background: #fff;
+}
+.cdh-form .ic { padding: 0 6px 0 18px; color: #6b7785; font-size: 16px; flex-shrink: 0; }
+.cdh-form input {
+    flex: 1; min-width: 100px; border: 0; outline: 0; background: transparent;
+    padding: 14px 6px; font-size: 16px; color: #0f0d1d;
+    font-family: 'Jost', sans-serif;
+}
+.cdh-form input::placeholder { color: #9aa5b8; }
+.cdh-form select {
+    border: 0; outline: 0; background: #fff;
+    padding: 11px 16px; border-radius: 99px;
+    font-weight: 700; font-size: 14px; color: #0f0d1d;
+    cursor: pointer; font-family: 'Jost', sans-serif;
+    border: 1px solid #e3e8f0;
+}
+.cdh-form button {
+    border: 0; cursor: pointer;
+    padding: 13px 28px; border-radius: 99px;
+    background: linear-gradient(135deg, #ffa31a, #f97316);
+    color: #fff; font-weight: 700; font-size: 14px;
+    font-family: 'Jost', sans-serif;
+    display: inline-flex; align-items: center; gap: 8px;
+    box-shadow: 0 8px 20px rgba(255, 163, 26, 0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    flex-shrink: 0;
+}
+.cdh-form button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(255, 163, 26, 0.45);
+}
+
+.cdh-features {
+    display: flex; justify-content: center; flex-wrap: wrap;
+    gap: 10px 22px; margin-top: 22px;
+    font-size: 13.5px; color: #445375;
+    font-family: 'Jost', sans-serif;
+}
+.cdh-features span { display: inline-flex; align-items: center; gap: 7px; }
+.cdh-features i { color: #236a25; font-size: 14px; }
+
+@media (max-width: 575px) {
+    .cdh-card { padding: 28px 22px; margin-top: -50px; }
+    .cdh-form { flex-wrap: wrap; border-radius: 18px; }
+    .cdh-form .ic { padding-left: 12px; }
+    .cdh-form input { padding: 12px 6px; }
+    .cdh-form select { flex: 1; }
+    .cdh-form button { width: 100%; justify-content: center; }
+}
+</style>
+{/literal}
+
+<section class="cdh-section">
+    <div class="container">
+        <div class="cdh-card">
+            <div class="cdh-head">
+                <span class="cdh-eyebrow">
+                    <span class="dot"></span>
+                    {if $language == 'french'}Recherche en temps réel — 200+ extensions{else}Live availability check — 200+ extensions{/if}
+                </span>
+                <h2>
+                    {if $language == 'french'}Trouvez votre <span class="accent">domaine</span> parfait{else}Find your perfect <span class="accent">domain</span>{/if}
+                </h2>
+                <p>{if $language == 'french'}Recherchez la disponibilité et ajoutez au panier en un clic.{else}Check availability and add to cart in one click.{/if}</p>
+            </div>
+
+            <form class="cdh-form" method="get" action="{$WEB_ROOT}/order-domain.php">
+                <span class="ic"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" name="sld" placeholder="{if $language == 'french'}votremarque{else}yourbrand{/if}" autocomplete="off" required>
+                <select name="tld">
+                    <option value=".cm" selected>.cm</option>
+                    <option value=".com">.com</option>
+                    <option value=".net">.net</option>
+                    <option value=".org">.org</option>
+                    <option value=".africa">.africa</option>
+                    <option value=".io">.io</option>
+                </select>
+                <button type="submit">
+                    <i class="fa-solid fa-bolt"></i>
+                    {if $language == 'french'}Rechercher{else}Search{/if}
+                </button>
+            </form>
+
+            <div class="cdh-features">
+                <span><i class="fa-solid fa-bolt"></i> {if $language == 'french'}Activation instantanée{else}Instant activation{/if}</span>
+                <span><i class="fa-solid fa-shield-halved"></i> {if $language == 'french'}WHOIS privé gratuit{else}Free WHOIS privacy{/if}</span>
+                <span><i class="fa-solid fa-lock"></i> DNSSEC</span>
+                <span><i class="fa-solid fa-headset"></i> 24/7</span>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Hosting Features Section Start (exact CAMDigit layout) -->
 <section class="hosting-section fix section-padding pt-0">
     <div class="container">

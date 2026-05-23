@@ -1,0 +1,515 @@
+.doming-name-wrapper {
+    background-color: $theme-color;
+    padding: 60px;
+    border-radius: 20px;
+    margin-top: -165px;
+    position: relative;
+    z-index: 9;
+
+    @include breakpoint (max-lg){
+        padding: 60px 50px;
+    }
+
+    @include breakpoint (max-md){
+        padding: 50px 40px;
+    }
+
+    @include breakpoint (max-sm){
+        padding: 40px 30px;
+    }
+
+    h3 {
+        font-size: 30px;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 30px;
+
+        @include breakpoint (max-sm){
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+    }
+
+    .doming-input {
+        max-width: 820px;
+        text-align: center;
+        margin: 0 auto;
+        position: relative;
+
+        input {
+            width: 100%;
+            outline: none;
+            border: none;
+            border-radius: 8px;
+            padding: 20px 25px;
+            line-height: 1;
+            font-size: 17px;
+            color: $text-color;
+        }
+
+        .theme-btn {
+            position: absolute;
+            top: 6px;
+            right: 7px;
+            border-radius: 4px;
+            padding: 17.5px 40px;
+            font-weight: 600;
+
+            &::before {
+                background-color: $theme-color;
+            }
+
+            &:hover {
+                color: $white;
+            }
+        }
+
+        .select-area {
+            position: absolute;
+            right: 28%;
+            top: 20px;
+
+            .nice-select{
+                width: unset !important;
+                gap: 20px;
+                font-size: 17px;
+
+                .list{
+                    max-height: 15vh;
+                    background: $header-color;
+                    width: 80px;
+                    padding: 5px 8px;
+                    overflow-y: scroll;
+                    right: -35px;
+                    border-radius: 0;
+
+                    li {
+                        color: $white;
+                        font-size: 15px;
+                        border: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .doming-list {
+        justify-content: center;
+        @include flex;
+        gap: 10px;
+        margin-top: 25px;
+
+        @include breakpoint (max-xl){
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        li {
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 14px;
+            color: $white;
+            font-weight: 500;
+            padding: 12px 25px;
+            line-height: 1;
+            @include flex;
+            justify-content: space-between;
+            gap: 22px;
+            position: relative;
+            text-transform: lowercase;
+
+            &::before {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                content: "";
+                transform: translate(-50%, -50%);
+                background-color: rgba(255, 255, 255, 0.5);
+                height: 14px;
+                width: 2px;
+            }
+
+            span {
+                font-size: 18px;
+                font-weight: 700;
+                line-height: 1;
+            }
+        }
+    }
+
+    &.style-2 {
+        border-radius: 2050px;
+        margin-top: -225px;
+
+        @include breakpoint (max-lg){
+            border-radius: 0;
+        }
+    }
+}
+
+.contact-wrapper {
+    .contact-left {
+        h2 {
+            font-size: 70px;
+            margin-bottom: 30px;
+
+            @include breakpoint (max-xl){
+                font-size: 62px;
+            }
+
+            @include breakpoint (max-lg){
+                font-size: 56px;
+            }
+
+            @include breakpoint (max-md){
+                font-size: 46px;
+            }
+
+            @include breakpoint (max-sm){
+                font-size: 36px;
+            }
+        }
+
+        .contact-image {
+            max-width: 585px;
+
+            img {
+                @include imgw;
+            }
+        }
+    }
+
+    .contact-right {
+        border-radius: 16px;
+        border: 1px solid $border-color;
+        padding: 45px 35px;
+
+        h3 {
+            font-size: 30px;
+            line-height: 1;
+            margin-bottom: 35px;
+        }
+
+        .form-clt {
+           input,textarea {
+                padding: 20px;
+                line-height: 1;
+                outline: none;
+                width: 100%;
+                border: 1px solid $border-color;
+                border-radius: 8px;
+                background-color: transparent;
+                color: $text-color;
+                font-weight: 500;
+
+                &::placeholder {
+                    color: $text-color;
+                }
+           }
+
+           textarea {
+                padding-bottom: 110px;
+           }
+
+            .category-oneadjust{
+                background-color: transparent;
+                border: 1px solid $border-color;
+                border-radius: 8px;
+                padding: 20px;
+                line-height: 1;
+                width: 100%;
+
+                @include breakpoint (max-xxl){
+                     width: initial;
+                }
+
+                .nice-select{
+                    width: 100% !important;
+                    gap: 20px;
+                    font-size: 16px;
+
+                    span {
+                        color: $text-color;
+                        font-weight: 500;
+                    }
+
+                    &::after{
+                        border-bottom: 2px solid $text-color;
+                        border-right: 2px solid $text-color;
+                        right: 0;
+                    }
+
+                    .list{
+                        max-height: 15vh;
+                        background: $bg-color;
+                        width: 100%;
+                        padding: 10px 8px;
+                        overflow-y: scroll;
+                        right: 0;
+                        left: 0;
+
+                        li {
+                            color: $header-color;
+                            font-size: 16px;
+                            border: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        .theme-btn {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .from-customradio {
+
+            .form-check-label {
+                color: $text-color;
+                font-size: 16px;
+                text-transform: capitalize;
+                margin-bottom: 20px;
+            }
+        }
+    }
+}
+
+
+// this is Modal custom  scss
+.modal-common-wrap {
+    position: relative;
+    z-index: 9999;
+    overflow-y: scroll;
+    max-height: 100vh;
+
+	.modal-content {
+		background: transparent;
+		border: unset;
+	}
+	.modal-header {
+		border-radius: 0;
+		padding: 0 0;
+		margin-left: auto;
+		border: unset;
+		background: $white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		.btn-close {
+			margin: 0 0;
+			padding: 0 0;
+			outline: none;
+			width: 40px;
+			height: 40px;
+		}
+	}
+	.modal-body {
+		background: $white;
+		box-shadow: 0px 4px 25px rgba(56, 75, 255, 0.08);
+		padding: 0 0;
+		.modal-common-content {
+			padding: 50px 65px;
+			width: 538px;
+			h2 {
+				font-size: 40px;
+				color: $black;
+				margin-bottom: 65px;
+			}
+			.login-from {
+				.cmn-mb {
+					margin-bottom: 30px;
+				}
+				.form-grp {
+					input {
+						border: unset;
+						padding-bottom: 16px;
+						border-bottom: 1px solid #d9d9d9;
+						color: #4f536c;
+						width: 100%;
+					}
+					::placeholder {
+						color: #4f536c;
+					}
+				}
+			}
+			.forgot-inner-area {
+				margin-top: 14px;
+				.checkmark-inner {
+					margin-bottom: 0;
+					display: flex;
+					align-items: center;
+					gap: 10px;
+					.form-check-input {
+						margin-top: 0;
+					}
+					.form-check-label {
+						font-size: 14px;
+						color: $header-color;
+						line-height: 18px;
+					}
+				}
+			}
+			.orting-badge {
+				position: relative;
+				text-align: center;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 16px;
+				font-weight: 500;
+				color: #445375;
+				margin: 28px 0;
+				&::before {
+					position: absolute;
+					left: 0;
+					content: "";
+					height: 1px;
+					width: 44%;
+					background: #d9d9d9;
+				}
+				&::after {
+					position: absolute;
+					right: 0;
+					content: "";
+					height: 1px;
+					width: 44%;
+					background: #d9d9d9;
+				}
+			}
+			.theme-btn {
+				border-radius: 0px;
+			}
+			.forgot {
+				font-size: 14px;
+				color: $theme-color;
+			}
+			.cmn-social {
+				display: flex;
+				align-items: center;
+				gap: 69px;
+				border: 1px solid #e5e5e5;
+				padding: 17px 30px;
+				text-transform: capitalize;
+                font-weight: 600;
+			}
+		}
+	}
+	.modal-dialog {
+		max-width: 1410px;
+	}
+	.modal-right-thumb {
+		.signlogin-btnwrap {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			transform: rotate(90deg);
+			position: absolute;
+			top: 45%;
+			left: -80px;
+			.theme-btn {
+				border-radius: 0;
+				padding: 14px 24px;
+				min-width: initial;
+				font-size: 16px;
+				font-weight: 400;
+			}
+			.theme-create {
+				padding: 6px 24px;
+				border: 1px solid $white;
+				font-size: 16px;
+				transition: all 0.4s;
+				text-transform: capitalize;
+				color: $white;
+				&:hover {
+					background: $theme-color;
+					border-color: $theme-color;
+				}
+			}
+		}
+	}
+	.from-customradio {
+		margin-top: 20px;
+		.form-check-input {
+			margin-top: 0;
+		}
+		.form-check-label {
+			color: #181818;
+			font-size: 14px;
+		}
+	}
+	@media screen and (max-width: 1399px) {
+		.modal-body {
+			.modal-common-content {
+				padding: 30px 30px;
+				width: 538px;
+				min-width: 400px;
+				h2 {
+					margin-bottom: 34px;
+				}
+				.login-from {
+					.cmn-mb {
+						margin-bottom: 20px;
+					}
+					.form-grp {
+						input {
+							padding-bottom: 12px;
+						}
+					}
+				}
+				.forgot-inner-area {
+					margin-top: 10px;
+					.checkmark-inner {
+						gap: 8px;
+					}
+				}
+				.orting-badge {
+					margin: 15px 0;
+				}
+				.cmn-social {
+					gap: 18px;
+					padding: 12px 20px;
+				}
+			}
+		}
+		.from-customradio {
+			margin-top: 12px;
+		}
+	}
+	@media screen and (max-width: 991px) {
+		.modal-body {
+			.modal-common-content {
+				padding: 24px 16px;
+				width: 538px;
+				min-width: 400px;
+			}
+		}
+	}
+	@media screen and (max-width: 767px) {
+		.modal-body {
+			.modal-common-content {
+				padding: 24px 16px;
+				width: 100%;
+				min-width: initial;
+			}
+		}
+		.modal-right-thumb {
+			width: 100%;
+			img {
+				width: 100%;
+			}
+		}
+	}
+	@media screen and (max-width: 400px) {
+		.modal-right-thumb {
+            .signlogin-btnwrap{
+                gap: 7px;
+                flex-wrap: wrap;
+                transform: rotate(0deg);
+                top: initial;
+                left: 15px;
+                bottom: 10px;
+            }
+		}
+	}
+}

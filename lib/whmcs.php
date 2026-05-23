@@ -50,6 +50,9 @@ function cd_session_start(): void
 
 cd_session_start();
 
+// Cart helpers (no-op include — safe even if cart.php is missing)
+if (is_file(__DIR__ . '/cart.php')) require_once __DIR__ . '/cart.php';
+
 // ── Logged-in client (set by WHMCS clientarea after ValidateLogin) ──────────
 function cd_client_id(): int
 {
@@ -114,7 +117,6 @@ function whmcs_api(string $action, array $params): array
     $errno    = curl_errno($ch);
     $error    = curl_error($ch);
     $http     = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
 
     if ($errno) {
         error_log("[whmcs_api/$action] cURL $errno: $error");
@@ -269,13 +271,33 @@ function cd_render_head(string $title, ?string $heroTitle = null, ?string $heroS
          '<meta http-equiv="X-UA-Compatible" content="IE=edge">',
          '<meta name="viewport" content="width=device-width,initial-scale=1">',
          '<title>', htmlspecialchars($title, ENT_QUOTES), ' — ', COMPANY_NAME, '</title>',
-         '<link rel="icon" href="', LOGO_URL, '">',
+         '<link rel="icon" type="image/png" sizes="32x32" href="', LOGO_URL, '">',
+         '<link rel="icon" type="image/png" sizes="16x16" href="', LOGO_URL, '">',
+         '<link rel="shortcut icon" href="', LOGO_URL, '">',
+         '<link rel="apple-touch-icon" href="', LOGO_URL, '">',
          '<link rel="preconnect" href="https://fonts.googleapis.com">',
          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
          '<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">',
          '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6g==" crossorigin="anonymous" referrerpolicy="no-referrer">';
 
     cd_inline_style();
+
+    // Modern design overlay + realtime utilities (loaded AFTER inline_style so they win)
+    // Use a version stamp to bust browser cache when these change.
+    $v = 'v=2026052201';
+    echo '<link rel="stylesheet" href="', SITE_URL, '/templates/six/css/cd-design.css?', $v, '">',
+         '<link rel="stylesheet" href="', SITE_URL, '/templates/six/css/hds-cart.css?', $v, '">',
+         '<script>window.HDS_CFG = ',
+            json_encode([
+                'proxy'   => SITE_URL . '/api-proxy.php',
+                'cartApi' => SITE_URL . '/cart-api.php',
+                'site'    => SITE_URL,
+                'lang'    => cd_lang(),
+            ], JSON_UNESCAPED_SLASHES),
+         ';</script>',
+         '<script src="', SITE_URL, '/templates/six/js/cd-realtime.js?', $v, '" defer></script>',
+         '<script src="', SITE_URL, '/templates/six/js/hds-cart.js?', $v, '" defer></script>',
+         '<script>document.addEventListener("DOMContentLoaded",function(){if(window.HDS)HDS.init(window.HDS_CFG);});</script>';
 
     echo '</head><body>';
 
@@ -290,7 +312,8 @@ function cd_render_head(string $title, ?string $heroTitle = null, ?string $heroS
 
 function cd_render_topbar(): void
 {
-    $loggedIn = cd_client_id() > 0;
+    $loggedIn  = cd_client_id() > 0;
+    $cartCount = function_exists('cd_cart_count') ? cd_cart_count() : 0;
     ?>
 <header class="cd-header">
     <div class="cd-header-top">
@@ -325,6 +348,13 @@ function cd_render_topbar(): void
                     <a href="<?= SITE_URL ?>/contact.php"><?= t('Contact','Contact') ?></a>
                 </nav>
                 <div class="cd-header-cta">
+                    <a href="<?= SITE_URL ?>/cart.php" class="cd-cart-link"
+                       aria-label="<?= t('Cart','Panier') ?>" title="<?= t('Cart','Panier') ?>">
+                        <i class="fa fa-cart-shopping"></i>
+                        <?php if ($cartCount > 0): ?>
+                        <span class="cd-cart-badge"><?= $cartCount ?></span>
+                        <?php endif ?>
+                    </a>
                     <?php if ($loggedIn): ?>
                     <a href="<?= SITE_URL ?>/account.php" class="cd-link-soft"><i class="fa fa-user-circle"></i>
                         <?= t('My Account','Mon Compte') ?></a>
@@ -662,6 +692,47 @@ a:hover {
 .cd-link-soft i {
     margin-right: 6px;
     color: var(--theme, #236a25)
+}
+
+/* Cart icon + badge */
+.cd-cart-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f3f7fb;
+    color: #0f0d1d;
+    font-size: 16px;
+    transition: all .2s
+}
+
+.cd-cart-link:hover {
+    background: var(--theme, #236a25);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(35, 106, 37, .25)
+}
+
+.cd-cart-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    background: var(--theme2, #ffa31a);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    border: 2px solid #fff;
+    line-height: 1
 }
 
 .cd-burger {

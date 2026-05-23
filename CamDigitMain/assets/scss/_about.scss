@@ -1,0 +1,210 @@
+.about-wrapper {
+    margin-bottom: 41px;
+
+    .about-image-items {
+        position: relative;
+
+        .shape-image {
+            position: absolute;
+            top: 16%;
+            right: 10%;
+        }
+
+        .about-sub {
+            font-size: 22px;
+            color: $white;
+            background-color: $theme-color;
+            padding: 18px 25px;
+            border-radius: 100px;
+            line-height: 1;
+            display: inline-block;
+            transform: rotate(-90deg) translateY(-50%);
+            position: absolute;
+            top: 44%;
+            left: -16%;
+            z-index: 9;
+
+            @include breakpoint (max-sm){
+                font-size: 14px;
+                left: -8%;
+            }
+        }
+
+        .about-image-1 {
+            max-width: 415px;
+            position: relative;
+
+            img {
+                @include imgw;
+            }
+
+            .about-image-2 {
+                max-width: 390px;
+                position: absolute;
+                right: -55%;
+                bottom: -14%;
+
+                @include breakpoint (max-xxl){
+                    max-width: 350px;
+                    right: -30%;
+                }
+
+                @include breakpoint (max-xl){
+                    max-width: 280px;
+                    right: -20%;
+                }
+
+                @include breakpoint (max-lg){
+                    max-width: 330px;
+                    right: -35%;
+                }
+
+                @include breakpoint (max-md){
+                    width: 250px;
+                    right: 0;
+                    bottom: 0;
+                }
+
+                @include breakpoint (max-sm){
+                    width: 200px;
+                }
+
+                img {
+                    border-radius: 16px;
+                }
+            }
+        }
+    }
+
+    .about-content {
+        margin-left: 10px;
+
+        @include breakpoint (max-lg){
+            margin-left: 0;
+        }
+
+        p {
+            border-bottom: 1px solid $border-color;
+            //display: inline-block;
+            padding-bottom: 30px;
+        }
+
+        .about-counter-items {
+            padding: 24px 40px;
+            background-color: $white;
+            box-shadow: $shadow;
+            @include flex;
+            gap: 50px;
+            position: relative;
+            margin-top: 35px;
+
+            @include breakpoint (max-xxl){
+               flex-wrap: wrap;
+            }
+
+            @include breakpoint (max-md){
+                flex-wrap: initial;
+            }
+
+            @include breakpoint (max-md){
+                flex-wrap: wrap;
+                gap: 40px;
+            }
+
+            .counter-items {
+                &:not(:last-child){
+                    border-right: 1px solid $border-color;
+                    padding-right: 50px;
+
+                    @include breakpoint (max-xxl){
+                        border: none;
+                        padding-right: 0;
+                    }
+
+                    @include breakpoint (max-lg){
+                        border-right: 1px solid $border-color;
+                        padding-right: 50px;
+                    }
+
+                    @include breakpoint (max-md){
+                        border: none;
+                        padding-right: 0;
+                    }
+                }
+
+                h2 {
+                    font-size: 55px;
+                    color: $theme-color;
+                    font-weight: 500;
+                }
+
+                h6 {
+                    font-size: 16px;
+                    font-weight: 500;
+                    margin-top: 5px;
+                }
+            }
+
+            .video-thumb {
+                border-radius: 1000px 0px 0px 1000px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 198px;
+                height: 145px;
+
+                @include breakpoint (max-xxl){
+                    position: relative;
+                }
+
+                @include breakpoint (max-lg){
+                    position: absolute;
+                }
+
+                @include breakpoint (max-md){
+                    position: relative;
+                }
+
+                img {
+                    @include imgw;
+                    object-fit: contain;
+                }
+
+                .video-box {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%,-50%);
+
+                    .video-btn {
+                        background-color: $white;
+                        color: $theme-color;
+                        display: inline-block;
+                        font-size: 16px;
+                        height: 50px;
+                        width: 50px;
+                        line-height: 50px;
+                        border-radius: 50%;
+                        text-align: center;
+                        position: relative;
+        
+                        &::before {
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            right: 0;
+                            bottom: 0;
+                            width: 65px;
+                            height: 65px;
+                            border-radius: 50%;
+                            border: 1.3px solid $white;
+                            content: "";
+                            transform: translate(-50%,-50%);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

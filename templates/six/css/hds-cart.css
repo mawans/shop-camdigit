@@ -1,0 +1,66 @@
+/* CamDigit — realtime domain search + cart (shared) */
+
+.hds-card { background:#fff; border-radius:16px; box-shadow:0 8px 30px rgba(0,0,0,.08); padding:32px; position:relative; z-index:5; }
+.hds-head { text-align:center; margin-bottom:18px; }
+.hds-eyebrow { display:inline-block; color:var(--theme2,#ffa31a); font-weight:600; letter-spacing:.04em; text-transform:uppercase; font-size:13px; margin-bottom:6px; }
+.hds-head h2 { margin:0 0 6px; font-size:28px; }
+.hds-head p { margin:0; color:#666; }
+
+.hds-form { display:flex; gap:10px; flex-wrap:wrap; align-items:stretch; max-width:760px; margin:0 auto; }
+.hds-input-wrap { display:flex; flex:1 1 360px; background:#f6f6f8; border-radius:10px; overflow:hidden; }
+.hds-input-wrap input { flex:1; border:0; background:transparent; padding:14px 16px; font-size:16px; outline:none; }
+.hds-input-wrap select { border:0; background:#efeff3; padding:0 14px; font-size:15px; outline:none; cursor:pointer; }
+.hds-form button { white-space:nowrap; }
+
+.hds-result { margin-top:20px; padding:16px 18px; border-radius:10px; font-size:15px; }
+.hds-result.available { background:#e8f7ec; border:1px solid #b6e0c2; color:#1f6b39; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.hds-result.taken { background:#fdecec; border:1px solid #f4b8b8; color:#8a1f1f; }
+.hds-result.error { background:#fff7e6; border:1px solid #f3d597; color:#8a5b00; }
+.hds-result .hds-result-actions { display:flex; gap:8px; flex-wrap:wrap; }
+
+.hds-suggestions-wrap { margin-top:24px; padding-top:20px; border-top:1px solid #eee; }
+.hds-suggestions-wrap h4 { margin:0 0 14px; font-size:17px; }
+.hds-suggestions-wrap h4 i { color:var(--theme2,#ffa31a); margin-right:6px; }
+.hds-suggestions-wrap h4 span { color:var(--theme,#236a25); }
+.hds-suggestions-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px; }
+
+.hds-tld-item { border:1px solid #e6e6ec; border-radius:10px; padding:14px; background:#fff; display:flex; flex-direction:column; gap:8px; }
+.hds-tld-item.available { border-color:#b6e0c2; background:#f3fbf6; }
+.hds-tld-item.taken { opacity:.65; }
+.hds-tld-row { display:flex; justify-content:space-between; align-items:center; }
+.hds-tld-ext { font-weight:700; font-size:16px; }
+.hds-tld-badge { font-size:11px; padding:2px 8px; border-radius:99px; background:#eee; color:#555; text-transform:uppercase; }
+.hds-tld-item.available .hds-tld-badge { background:#1f6b39; color:#fff; }
+.hds-tld-item.taken .hds-tld-badge { background:#8a1f1f; color:#fff; }
+.hds-tld-domain { font-size:14px; color:#444; word-break:break-all; }
+
+.hds-add-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:9px 14px; border-radius:8px; background:var(--theme2,#ffa31a); color:#fff; font-size:13px; font-weight:600; border:0; cursor:pointer; transition:filter .15s ease, transform .1s ease; }
+.hds-add-btn:hover { filter:brightness(.95); }
+.hds-add-btn:active { transform:translateY(1px); }
+.hds-add-btn:disabled { opacity:.6; cursor:not-allowed; }
+.hds-add-btn.in-cart { background:#1f6b39; }
+.hds-add-btn.in-cart::before { content:"\f00c"; font-family:"Font Awesome 6 Free","Font Awesome 5 Free","FontAwesome"; font-weight:900; margin-right:4px; }
+.hds-remove-btn { background:#8a1f1f; }
+
+.hds-loading { padding:16px; color:#666; font-size:14px; }
+.hds-cta-wrap { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:center; margin-top:22px; padding-top:18px; border-top:1px dashed #e6e6ec; }
+
+/* Floating cart pill — visible site-wide once the lib is loaded */
+.hds-cart-pill { position:fixed; right:18px; bottom:18px; z-index:9990; background:#fff; border-radius:99px; padding:10px 16px 10px 14px; box-shadow:0 10px 30px rgba(0,0,0,.18); display:none; align-items:center; gap:10px; text-decoration:none; color:#222; font-weight:600; font-size:14px; border:1px solid #eee; }
+.hds-cart-pill.show { display:inline-flex; }
+.hds-cart-pill .hds-cart-icon { width:34px; height:34px; border-radius:50%; background:var(--theme2,#ffa31a); color:#fff; display:flex; align-items:center; justify-content:center; }
+.hds-cart-pill .hds-cart-count { background:var(--theme,#236a25); color:#fff; border-radius:99px; min-width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; padding:0 7px; font-size:12px; }
+.hds-cart-pill .hds-cart-total { font-weight:700; }
+
+/* Toast */
+.hds-toast-wrap { position:fixed; right:18px; top:18px; z-index:9991; display:flex; flex-direction:column; gap:8px; max-width:340px; pointer-events:none; }
+.hds-toast { background:#1f6b39; color:#fff; padding:12px 16px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.18); font-size:14px; opacity:0; transform:translateY(-8px); transition:opacity .2s ease, transform .2s ease; pointer-events:auto; }
+.hds-toast.show { opacity:1; transform:translateY(0); }
+.hds-toast.error { background:#8a1f1f; }
+.hds-toast.info { background:#0e3b6b; }
+
+@media (max-width: 575px) {
+    .hds-card { padding:20px; }
+    .hds-head h2 { font-size:22px; }
+    .hds-cart-pill { right:12px; bottom:12px; padding:8px 12px; font-size:13px; }
+}
